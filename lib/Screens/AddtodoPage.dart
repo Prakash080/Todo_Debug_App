@@ -3,10 +3,12 @@ import 'package:TODO_LOGIN_APPLICATION/GetX_Helper/FirebaseController.dart';
 import 'package:TODO_LOGIN_APPLICATION/Models/Todo.dart';
 import 'package:TODO_LOGIN_APPLICATION/Screens/Home_drawer.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AddtodoPage extends GetWidget<FirebaseController> {
+  FirebaseAuth _auth = FirebaseAuth.instance;
   final TodoController todoController = Get.find();
   final int index;
 
@@ -69,14 +71,18 @@ class AddtodoPage extends GetWidget<FirebaseController> {
                   if (this.index.isNull && textEditingController.text != "") {
                     todoController.todos
                         .add(Todo(text: textEditingController.text));
+                    controller.add_todo(
+                        textEditingController.text, _auth.currentUser.uid);
+                    textEditingController.clear();
+                    Get.back();
                   } else {
                     var editing = todoController.todos[index];
                     editing.text = textEditingController.text;
                     todoController.todos[index] = editing;
+                    controller.update_todo(todoController.todos[index].text,
+                        _auth.currentUser.uid);
+                    textEditingController.clear();
                   }
-                  controller.add_todo(textEditingController.text);
-                  textEditingController.clear();
-                  Get.back();
                 },
               ),
             ],

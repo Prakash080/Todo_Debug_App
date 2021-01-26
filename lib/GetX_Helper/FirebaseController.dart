@@ -111,8 +111,20 @@ class FirebaseController extends GetxController {
     }));
   }
 
-  void add_todo(String todos) async {
+  void add_todo(String todos, String uid) async {
     taskcollections.doc(uid).collection('Todos').add({
+      'Task': todos,
+      'Created Time': DateTime.now(),
+    });
+  }
+
+  void delete_todo(String todos, String uid) async {
+    final todoid = taskcollections.doc(uid).collection('Todos').doc().id;
+    taskcollections.doc(uid).collection('Todos').doc(todoid).delete();
+  }
+
+  void update_todo(String todos, String uid) async {
+    taskcollections.doc(uid).collection('Todos').doc(todos).update({
       'Task': todos,
       'Created Time': DateTime.now(),
     });

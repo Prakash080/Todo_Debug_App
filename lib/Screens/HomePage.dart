@@ -1,13 +1,16 @@
+import 'dart:async';
 import 'package:TODO_LOGIN_APPLICATION/Controllers/TodoController.dart';
 import 'package:TODO_LOGIN_APPLICATION/GetX_Helper/FirebaseController.dart';
 import 'package:TODO_LOGIN_APPLICATION/Screens/AddtodoPage.dart';
 import 'package:TODO_LOGIN_APPLICATION/Screens/Home_drawer.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HomePage extends GetWidget<FirebaseController> {
+  FirebaseAuth _auth = FirebaseAuth.instance;
   final String uid;
   var taskcollections = FirebaseFirestore.instance.collection('Todos');
   HomePage({Key key, @required this.uid}) : super(key: key);
@@ -40,7 +43,7 @@ class HomePage extends GetWidget<FirebaseController> {
           ),
           body: Container(
             padding: EdgeInsets.only(left: 5, right: 5, top: 10),
-            child: Obx(() => ListView.separated(
+            child: Obx(() => ListView.builder(
                 itemBuilder: (context, index) => Padding(
                       padding:
                           EdgeInsets.symmetric(vertical: 0.0, horizontal: 5.0),
@@ -87,6 +90,9 @@ class HomePage extends GetWidget<FirebaseController> {
                                   : Icons.edit),
                               onPressed: () {
                                 if (todoController.todos[index].done) {
+                                  controller.delete_todo(
+                                      todoController.todos[index].text,
+                                      _auth.currentUser.uid);
                                   var removed = todoController.todos[index];
                                   todoController.todos.removeAt(index);
                                   Get.snackbar('Todo removed',
@@ -114,7 +120,6 @@ class HomePage extends GetWidget<FirebaseController> {
                         ),
                       ),
                     ),
-                separatorBuilder: (_, __) => Divider(),
                 itemCount: todoController.todos.length)),
           ),
         ));
