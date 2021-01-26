@@ -65,11 +65,14 @@ class FirebaseController extends GetxController {
             Get.snackbar("Error while Logging in", onError.message));
   }
 
-  void signout() async {
-    await _auth.signOut().then((value) {
-      Get.offAll(LoginPage());
-      Get.snackbar("Logout ", "Successful");
-    });
+  Future<bool> signout() async {
+    User user = await _auth.currentUser;
+    print(user.providerData[1].providerId);
+    if (user.providerData[1].providerId == 'google.com') {
+      await googleSignIn.disconnect();
+    }
+    await _auth.signOut();
+    return Future.value(true);
   }
 
   void sendpasswordresetemail(String email) async {
@@ -94,21 +97,24 @@ class FirebaseController extends GetxController {
     }).catchError((onError) => Get.snackbar("Credential Error", "Failed"));
   }
 
-  void google_signIn() async {
-    final GoogleSignInAccount googleUser = await googleSignIn.signIn();
+  Future<bool> google_signIn() async {
+    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
 
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
+    if (googleSignInAccount != null) {
+      GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount.authentication;
 
-    final AuthCredential credential = GoogleAuthProvider.credential(
-        idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
-    // ignore: unused_local_variable
-    final result = (await _auth.signInWithCredential(credential).then((value) {
-      User user = _auth.currentUser;
+      AuthCredential credential = GoogleAuthProvider.credential(
+          idToken: googleSignInAuthentication.idToken,
+          accessToken: googleSignInAuthentication.accessToken);
+
+      UserCredential result = await _auth.signInWithCredential(credential);
+
+      User user = await _auth.currentUser;
       print(user.uid);
-      Get.offAll(HomePage(uid: user.uid));
-      Get.snackbar("Login ", "Successful");
-    }));
+
+      return Future.value(true);
+    }
   }
 
   void add_todo(String todos, String uid) async {

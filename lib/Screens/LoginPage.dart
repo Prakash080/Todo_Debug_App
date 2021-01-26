@@ -1,6 +1,8 @@
 import 'package:TODO_LOGIN_APPLICATION/GetX_Helper/FirebaseController.dart';
+import 'package:TODO_LOGIN_APPLICATION/Screens/HomePage.dart';
 import 'package:TODO_LOGIN_APPLICATION/Screens/RecoverPasswordPage.dart';
 import 'package:TODO_LOGIN_APPLICATION/Screens/RegisterPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -8,6 +10,7 @@ import 'package:get/get.dart';
 class LoginPage extends GetWidget<FirebaseController> {
   final TextEditingController email_c = TextEditingController();
   final TextEditingController pass_c = TextEditingController();
+  FirebaseAuth _auth = FirebaseAuth.instance;
   var mainColor = Color(0xff2470c7);
 
   @override
@@ -181,9 +184,10 @@ class LoginPage extends GetWidget<FirebaseController> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     GestureDetector(
-                                      onTap: () {
-                                        controller.google_signIn();
-                                      },
+                                      onTap: () => controller
+                                          .google_signIn()
+                                          .whenComplete(() => Get.to(HomePage(
+                                              uid: _auth.currentUser.uid))),
                                       child: Container(
                                         height: 60,
                                         width: 60,

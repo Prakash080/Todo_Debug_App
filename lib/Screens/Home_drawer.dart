@@ -1,6 +1,7 @@
 import 'package:TODO_LOGIN_APPLICATION/GetX_Helper/FirebaseController.dart';
 import 'package:TODO_LOGIN_APPLICATION/Screens/DeleteAccountPage.dart';
 import 'package:TODO_LOGIN_APPLICATION/Screens/HomePage.dart';
+import 'package:TODO_LOGIN_APPLICATION/Screens/LoginPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -66,9 +67,9 @@ class Home_drawer extends GetWidget<FirebaseController> {
                       fontFamily: 'Montserrat',
                       fontSize: MediaQuery.of(context).size.height / 40,
                     )),
-                onTap: () {
-                  controller.signout();
-                }),
+                onTap: () => controller
+                    .signout()
+                    .whenComplete(() => Get.to(LoginPage()))),
           )
         ],
       ),
