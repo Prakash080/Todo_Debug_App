@@ -28,15 +28,13 @@ class FirebaseController extends GetxController {
 
   // function to createuser, login and sign out user
 
-  void createUser(String fullname, String email, String phonenumber,
-      String password) async {
+  void createUser(String fullname, String email, String password) async {
     CollectionReference reference =
         FirebaseFirestore.instance.collection("Users");
 
     Map<String, String> userdata = {
       "Full Name": fullname,
       "Email": email,
-      "Phone Number": phonenumber,
       "Password": password
     };
 

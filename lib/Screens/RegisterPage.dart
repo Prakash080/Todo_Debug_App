@@ -283,7 +283,6 @@ class RegisterPage extends GetWidget<FirebaseController> {
       return;
     }
     formkey.currentState.save();
-    controller.createUser(
-        name_c.text, email_c.text, phonenumber_c.text, pass_c.text);
+    controller.createUser(name_c.text, email_c.text, pass_c.text);
   }
 }

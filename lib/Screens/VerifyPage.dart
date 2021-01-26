@@ -102,7 +102,8 @@ class VerifyPage extends GetWidget<FirebaseController> {
                                   if (value.isEmpty) {
                                     return 'Mobile number is required';
                                   }
-                                  if (!RegExp(r"^[1-9]{1}[0-9]{9}$")
+                                  if (!RegExp(
+                                          r"^(\+91)?(-)?\s*?(91)?\s*?(\d{3})-?\s*?(\d{3})-?\s*?(\d{4})")
                                       .hasMatch(value)) {
                                     return 'Please enter a valid Mobile number';
                                   }
@@ -215,7 +216,7 @@ class VerifyPage extends GetWidget<FirebaseController> {
     );
   }
 
-  Future verifyPhoneNumber() async {
+  Future<void> verifyPhoneNumber() async {
     print('Phone verification started');
     PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout =
         (String verificationId) {
@@ -239,7 +240,6 @@ class VerifyPage extends GetWidget<FirebaseController> {
           "Phone number verification failed. Code: ${authException.code}",
           "Message: ${authException.message}");
     };
-
     await _auth.verifyPhoneNumber(
         phoneNumber: ph_c.text,
         timeout: const Duration(seconds: 5),
@@ -249,7 +249,7 @@ class VerifyPage extends GetWidget<FirebaseController> {
         codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
   }
 
-  void signInWithPhoneNumber() async {
+  Future<void> signInWithPhoneNumber() async {
     final AuthCredential credential = PhoneAuthProvider.credential(
       verificationId: _verificationId,
       smsCode: _smsController.text,

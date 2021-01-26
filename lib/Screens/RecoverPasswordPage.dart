@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 class RecoverPasswordPage extends GetWidget<FirebaseController> {
   var mainColor = Color(0xff2470c7);
   final TextEditingController email_c = TextEditingController();
+  final GlobalKey<FormState> formkey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -50,73 +51,99 @@ class RecoverPasswordPage extends GetWidget<FirebaseController> {
                       borderRadius: BorderRadius.all(
                         Radius.circular(20),
                       ),
-                      child: Container(
-                        height: MediaQuery.of(context).size.height * 0.6,
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  "Reset Password",
-                                  style: TextStyle(
-                                    fontSize:
-                                        MediaQuery.of(context).size.height / 30,
+                      child: Form(
+                        key: formkey,
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * 0.6,
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    "Reset Password",
+                                    style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.height /
+                                              30,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding: EdgeInsets.all(8),
-                              child: TextFormField(
-                                controller: email_c,
-                                keyboardType: TextInputType.emailAddress,
-                                decoration: InputDecoration(
-                                    prefixIcon: Icon(
-                                      Icons.email,
-                                      color: mainColor,
-                                    ),
-                                    labelText: 'E-mail'),
+                                ],
                               ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Container(
-                                  height: 1 *
-                                      (MediaQuery.of(context).size.height / 20),
-                                  width: 4 *
-                                      (MediaQuery.of(context).size.width / 10),
-                                  margin: EdgeInsets.only(bottom: 20),
-                                  child: RaisedButton(
-                                    elevation: 5.0,
-                                    color: mainColor,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                    ),
-                                    onPressed: () => controller
-                                        .sendpasswordresetemail(email_c.text),
-                                    child: Text(
-                                      "Get Link",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        letterSpacing: 1.5,
-                                        fontSize:
-                                            MediaQuery.of(context).size.height /
-                                                40,
+                              Padding(
+                                padding: EdgeInsets.all(8),
+                                child: TextFormField(
+                                  controller: email_c,
+                                  keyboardType: TextInputType.emailAddress,
+                                  decoration: InputDecoration(
+                                      prefixIcon: Icon(
+                                        Icons.email,
+                                        color: mainColor,
+                                      ),
+                                      labelText: 'E-mail'),
+                                  validator: (String value) {
+                                    if (value.isEmpty) {
+                                      return 'Email is required';
+                                    }
+                                    if (!RegExp(
+                                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                        .hasMatch(value)) {
+                                      return 'Please enter a valid email address';
+                                    }
+                                  },
+                                  onSaved: (String value) {
+                                    email_c.text = value;
+                                  },
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                    height: 1 *
+                                        (MediaQuery.of(context).size.height /
+                                            20),
+                                    width: 4 *
+                                        (MediaQuery.of(context).size.width /
+                                            10),
+                                    margin: EdgeInsets.only(bottom: 20),
+                                    child: RaisedButton(
+                                      elevation: 5.0,
+                                      color: mainColor,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                      ),
+                                      onPressed: () {
+                                        if (!formkey.currentState.validate()) {
+                                          return;
+                                        }
+                                        controller.sendpasswordresetemail(
+                                            email_c.text);
+                                      },
+                                      child: Text(
+                                        "Get Link",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          letterSpacing: 1.5,
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .height /
+                                              40,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ))
                 ])
