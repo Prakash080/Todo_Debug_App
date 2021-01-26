@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "566121355629",
+    "project_id": "todo-login-application",
+    "storage_bucket": "todo-login-application.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:566121355629:android:d73b62ac25eb77d6a0e264",
+        "android_client_info": {
+          "package_name": "com.example.TODO_LOGIN_APPLICATION"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "566121355629-aagn538qpfjcsd5r5k7rhd9sr30nhvlm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.TODO_LOGIN_APPLICATION",
+            "certificate_hash": "e5e23990fe7e13ab689d788350fdfce1d76024f0"
+          }
+        },
+        {
+          "client_id": "566121355629-7vvitjb5299uhr6u98lvun4ddte5hg10.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHrHgYGgJmD3fdbi826qVDDcfH5FDRUbs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "566121355629-7vvitjb5299uhr6u98lvun4ddte5hg10.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
