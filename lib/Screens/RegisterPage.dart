@@ -143,32 +143,6 @@ class RegisterPage extends GetWidget<FirebaseController> {
                                     Padding(
                                       padding: EdgeInsets.all(8),
                                       child: TextFormField(
-                                        controller: phonenumber_c,
-                                        keyboardType: TextInputType.text,
-                                        decoration: InputDecoration(
-                                          prefixIcon: Icon(
-                                            Icons.phone_android,
-                                            color: mainColor,
-                                          ),
-                                          labelText: 'Phone Number',
-                                        ),
-                                        validator: (String value) {
-                                          if (value.isEmpty) {
-                                            return 'Mobile number is required';
-                                          }
-                                          if (!RegExp(r"^[1-9]{1}[0-9]{9}$")
-                                              .hasMatch(value)) {
-                                            return 'Please enter a valid Mobile number';
-                                          }
-                                        },
-                                        onSaved: (String value) {
-                                          phonenumber_c.text = value;
-                                        },
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.all(8),
-                                      child: TextFormField(
                                         controller: pass_c,
                                         keyboardType: TextInputType.text,
                                         obscureText: true,
@@ -177,7 +151,7 @@ class RegisterPage extends GetWidget<FirebaseController> {
                                             Icons.lock_outline,
                                             color: mainColor,
                                           ),
-                                          labelText: 'Password',
+                                          labelText: 'Create Password',
                                         ),
                                         validator: (String value) {
                                           if (value.isEmpty) {
