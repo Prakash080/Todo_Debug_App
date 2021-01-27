@@ -1,17 +1,19 @@
 import 'package:TODO_LOGIN_APPLICATION/Controllers/TodoController.dart';
 import 'package:TODO_LOGIN_APPLICATION/GetX_Helper/FirebaseController.dart';
 import 'package:TODO_LOGIN_APPLICATION/Models/Todo.dart';
+import 'package:TODO_LOGIN_APPLICATION/Screens/HomePage.dart';
 import 'package:TODO_LOGIN_APPLICATION/Screens/Home_drawer.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AddtodoPage extends GetWidget<FirebaseController> {
   FirebaseAuth _auth = FirebaseAuth.instance;
+  var taskcollections = FirebaseFirestore.instance.collection('Todos');
   final TodoController todoController = Get.find();
   final int index;
-
   AddtodoPage({this.index});
   var mainColor = Color(0xff2470c7);
 
@@ -19,7 +21,7 @@ class AddtodoPage extends GetWidget<FirebaseController> {
   Widget build(BuildContext context) {
     String text = '';
     if (!this.index.isNull) {
-      text = todoController.todos[index].text;
+      text = todoController.todos[index].task;
     }
     TextEditingController textEditingController =
         TextEditingController(text: text);
@@ -69,20 +71,10 @@ class AddtodoPage extends GetWidget<FirebaseController> {
                 color: mainColor,
                 onPressed: () {
                   if (this.index.isNull && textEditingController.text != "") {
-                    todoController.todos
-                        .add(Todo(text: textEditingController.text));
-                    controller.add_todo(
+                    controller.addTodo(
                         textEditingController.text, _auth.currentUser.uid);
                     textEditingController.clear();
-                    Get.back();
-                  } else {
-                    var editing = todoController.todos[index];
-                    editing.text = textEditingController.text;
-                    todoController.todos[index] = editing;
-                    controller.update_todo(todoController.todos[index].text,
-                        _auth.currentUser.uid);
-                    textEditingController.clear();
-                  }
+                  } else {}
                 },
               ),
             ],

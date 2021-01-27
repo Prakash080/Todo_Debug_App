@@ -86,33 +86,6 @@ class VerifyPage extends GetWidget<FirebaseController> {
                                 ),
                               ),
                             ),
-                            Padding(
-                              padding: EdgeInsets.all(8),
-                              child: TextFormField(
-                                controller: ph_c,
-                                keyboardType: TextInputType.text,
-                                decoration: InputDecoration(
-                                  prefixIcon: Icon(
-                                    Icons.phone_android,
-                                    color: mainColor,
-                                  ),
-                                  labelText: 'Phone Number',
-                                ),
-                                validator: (String value) {
-                                  if (value.isEmpty) {
-                                    return 'Mobile number is required';
-                                  }
-                                  if (!RegExp(
-                                          r"^(\+91)?(-)?\s*?(91)?\s*?(\d{3})-?\s*?(\d{3})-?\s*?(\d{4})")
-                                      .hasMatch(value)) {
-                                    return 'Please enter a valid Mobile number';
-                                  }
-                                },
-                                onSaved: (String value) {
-                                  ph_c.text = value;
-                                },
-                              ),
-                            ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
@@ -129,68 +102,19 @@ class VerifyPage extends GetWidget<FirebaseController> {
                                       borderRadius: BorderRadius.circular(30.0),
                                     ),
                                     onPressed: () {
-                                      if (!formkey.currentState.validate()) {
-                                        return;
-                                      }
-                                      verifyPhoneNumber();
-                                    },
-                                    child: Text(
-                                      "Send OTP",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize:
-                                            MediaQuery.of(context).size.height /
-                                                45,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                            Padding(
-                              padding: EdgeInsets.all(8),
-                              child: TextFormField(
-                                controller: _smsController,
-                                keyboardType: TextInputType.number,
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                  labelText: 'Enter OTP',
-                                  prefixIcon: Icon(
-                                    Icons.security,
-                                    color: mainColor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Container(
-                                  height: 1 *
-                                      (MediaQuery.of(context).size.height / 20),
-                                  width: 4 *
-                                      (MediaQuery.of(context).size.width / 10),
-                                  margin: EdgeInsets.only(bottom: 20),
-                                  child: RaisedButton(
-                                    elevation: 5.0,
-                                    color: mainColor,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                    ),
-                                    onPressed: () {
-                                      if (_auth.currentUser != null) {
+                                      CircularProgressIndicator();
+                                      _auth.currentUser.reload();
+                                      if (_auth.currentUser.emailVerified) {
                                         Get.to(HomePage(
-                                          uid: _auth.currentUser.uid,
-                                        ));
-                                        Get.snackbar(
-                                            "Successfully signed in UID:",
-                                            "${_auth.currentUser.uid}");
-                                      } else {
-                                        signInWithPhoneNumber();
-                                      }
+                                            uid: _auth.currentUser.uid));
+                                        Get.snackbar("Login", "Successful");
+                                      } else
+                                        Get.snackbar("Verify Email",
+                                            "Plese Verify yor email to login");
+                                      _auth.currentUser.reload();
                                     },
                                     child: Text(
-                                      "Sign-in",
+                                      "Done",
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize:
@@ -214,49 +138,5 @@ class VerifyPage extends GetWidget<FirebaseController> {
         ),
       ),
     );
-  }
-
-  Future<void> verifyPhoneNumber() async {
-    print('Phone verification started');
-    PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout =
-        (String verificationId) {
-      Get.snackbar("verification code:", "" + verificationId);
-      this._verificationId = verificationId;
-    };
-    PhoneCodeSent codeSent =
-        (String verificationId, [int forceResendingToken]) async {
-      Get.snackbar(
-          "Please check your phone for the verification code.", "OTP Sent");
-      this._verificationId = verificationId;
-    };
-    PhoneVerificationCompleted verificationCompleted =
-        (PhoneAuthCredential phoneAuthCredential) async {
-      Get.snackbar("Phone number automatically verified", "");
-    };
-
-    PhoneVerificationFailed verificationFailed =
-        (FirebaseAuthException authException) {
-      Get.snackbar(
-          "Phone number verification failed. Code: ${authException.code}",
-          "Message: ${authException.message}");
-    };
-    await _auth.verifyPhoneNumber(
-        phoneNumber: ph_c.text,
-        timeout: const Duration(seconds: 5),
-        verificationCompleted: verificationCompleted,
-        verificationFailed: verificationFailed,
-        codeSent: codeSent,
-        codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
-  }
-
-  Future<void> signInWithPhoneNumber() async {
-    final AuthCredential credential = PhoneAuthProvider.credential(
-      verificationId: _verificationId,
-      smsCode: _smsController.text,
-    );
-    final UserCredential authResult =
-        await _auth.signInWithCredential(credential);
-    final User user = authResult.user;
-    print('User Id : ' + user.uid);
   }
 }

@@ -1,9 +1,7 @@
 import 'package:TODO_LOGIN_APPLICATION/GetX_Helper/FirebaseController.dart';
 import 'package:TODO_LOGIN_APPLICATION/Screens/LoginPage.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sms_autofill/sms_autofill.dart';
 
 class RegisterPage extends GetWidget<FirebaseController> {
   final TextEditingController name_c = TextEditingController();
@@ -143,6 +141,33 @@ class RegisterPage extends GetWidget<FirebaseController> {
                                     Padding(
                                       padding: EdgeInsets.all(8),
                                       child: TextFormField(
+                                        controller: phonenumber_c,
+                                        keyboardType: TextInputType.text,
+                                        decoration: InputDecoration(
+                                          prefixIcon: Icon(
+                                            Icons.phone_android,
+                                            color: mainColor,
+                                          ),
+                                          labelText: 'Phone Number',
+                                        ),
+                                        validator: (String value) {
+                                          if (value.isEmpty) {
+                                            return 'Mobile number is required';
+                                          }
+                                          if (!RegExp(
+                                                  r"^(\+91)?(-)?\s*?(91)?\s*?(\d{3})-?\s*?(\d{3})-?\s*?(\d{4})")
+                                              .hasMatch(value)) {
+                                            return 'Please enter a valid Mobile number';
+                                          }
+                                        },
+                                        onSaved: (String value) {
+                                          phonenumber_c.text = value;
+                                        },
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.all(8),
+                                      child: TextFormField(
                                         controller: pass_c,
                                         keyboardType: TextInputType.text,
                                         obscureText: true,
@@ -253,6 +278,7 @@ class RegisterPage extends GetWidget<FirebaseController> {
                                                   BorderRadius.circular(30.0),
                                             ),
                                             onPressed: () async {
+                                              CircularProgressIndicator();
                                               RegisterUser();
                                             },
                                             child: Text(

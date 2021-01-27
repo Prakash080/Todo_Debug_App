@@ -35,8 +35,6 @@ dependencies:
   google_sign_in: ^4.5.6
   auto_size_text: ^2.1.0
   font_awesome_flutter: ^8.11.0
-  progress_dialog: ^1.2.4
-  sms_autofill: ^1.2.6
 
 dev_dependencies:
   flutter_test:

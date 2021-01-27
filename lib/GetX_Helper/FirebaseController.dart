@@ -1,3 +1,4 @@
+import 'package:TODO_LOGIN_APPLICATION/Models/Todo.dart';
 import 'package:TODO_LOGIN_APPLICATION/Screens/HomePage.dart';
 import 'package:TODO_LOGIN_APPLICATION/Screens/LoginPage.dart';
 import 'package:TODO_LOGIN_APPLICATION/Screens/VerifyPage.dart';
@@ -10,6 +11,7 @@ class FirebaseController extends GetxController {
   CollectionReference taskcollections =
       FirebaseFirestore.instance.collection('Todos');
   FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['email']);
   Rx<User> _firebaseUser = Rx<User>();
@@ -19,15 +21,7 @@ class FirebaseController extends GetxController {
   String get displayname => _firebaseUser.value?.displayName;
   String get uid => _firebaseUser.value?.uid;
 
-  @override
-  void onInit() {
-    _firebaseUser.bindStream(_auth.authStateChanges());
-
-    print(" Auth Change :   ${_auth.currentUser}");
-  }
-
   // function to createuser, login and sign out user
-
   void createUser(String fullname, String email, String password) async {
     CollectionReference reference =
         FirebaseFirestore.instance.collection("Users");
@@ -117,22 +111,56 @@ class FirebaseController extends GetxController {
     }
   }
 
-  void add_todo(String todos, String uid) async {
-    taskcollections.doc(uid).collection('Todos').add({
-      'Task': todos,
-      'Created Time': DateTime.now(),
+  Future<void> addTodo(String content, String uid) async {
+    try {
+      await _firestore.collection("Users").doc(uid).collection("todos").add({
+        'dateCreated': Timestamp.now(),
+        'content': content,
+        'done': false,
+      });
+      Get.to(HomePage(uid: _auth.currentUser.uid));
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  Stream<List<Todo>> todoStream(String uid) {
+    return _firestore
+        .collection("users")
+        .doc(uid)
+        .collection("todos")
+        .orderBy("dateCreated", descending: true)
+        .snapshots()
+        .map((QuerySnapshot query) {
+      List<Todo> retVal = List();
+      query.docs.forEach((element) {
+        retVal.add(Todo.fromDocumentSnapshot(element));
+      });
+      return retVal;
     });
   }
 
-  void delete_todo(String todos, String uid) async {
-    final todoid = taskcollections.doc(uid).collection('Todos').doc().id;
-    taskcollections.doc(uid).collection('Todos').doc(todoid).delete();
+  Future<void> updateTodo(bool newValue, String uid, String todoId) async {
+    try {
+      _firestore
+          .collection("users")
+          .doc(uid)
+          .collection("todos")
+          .doc(todoId)
+          .update({"done": newValue});
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
   }
 
-  void update_todo(String todos, String uid) async {
-    taskcollections.doc(uid).collection('Todos').doc(todos).update({
-      'Task': todos,
-      'Created Time': DateTime.now(),
-    });
+  Future<void> deleteTodo(String uid, String todoId) async {
+    try {
+      taskcollections.doc(uid).collection("todos").doc(todoId).delete();
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
   }
 }

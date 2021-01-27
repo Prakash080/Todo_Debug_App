@@ -119,6 +119,7 @@ class LoginPage extends GetWidget<FirebaseController> {
                                   children: <Widget>[
                                     FlatButton(
                                       onPressed: () {
+                                        CircularProgressIndicator();
                                         Get.to(RecoverPasswordPage());
                                       },
                                       child: Text("Forgot Password"),
@@ -184,10 +185,12 @@ class LoginPage extends GetWidget<FirebaseController> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     GestureDetector(
-                                      onTap: () => controller
-                                          .google_signIn()
-                                          .whenComplete(() => Get.to(HomePage(
-                                              uid: _auth.currentUser.uid))),
+                                      onTap: () {
+                                        CircularProgressIndicator();
+                                        controller.google_signIn().whenComplete(
+                                            () => Get.to(HomePage(
+                                                uid: _auth.currentUser.uid)));
+                                      },
                                       child: Container(
                                         height: 60,
                                         width: 60,
@@ -222,6 +225,7 @@ class LoginPage extends GetWidget<FirebaseController> {
                           padding: EdgeInsets.only(top: 40),
                           child: FlatButton(
                             onPressed: () {
+                              CircularProgressIndicator();
                               Get.to(RegisterPage());
                             },
                             child: RichText(
